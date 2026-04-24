@@ -81,6 +81,11 @@ int_process_column <- function(data = metadata,
         levels(data[[column]]) <- plyr::mapvalues(levels(data[[column]]), 
                                                   from = names(rename_factors), 
                                                   to = rename_factors)
+        unmapped <- levels(data[[column]])[!levels(data[[column]]) %in% rename_factors]
+        if (length(unmapped) > 0) {
+          warning(paste("The following factor levels were not remapped:", 
+                        paste(unmapped, collapse = ", ")))
+        }
       }
       
       #reorder factor levels if provided (after renaming)
