@@ -11,6 +11,7 @@
 #' @param factor_levels Optional vector of factor levels (character).
 #' @param factor_order Optional vector specifying the order of factor levels (character).
 #' @param replace_na Optional vector of values to replace with `NA` (character).
+#' @param na_level Optional string to replace `NA` values with before type conversion (character).
 #' @param rename_factors Optional named vector for renaming factor levels (named character).
 #' @param boolean_map Optional list specifying values for `TRUE` and `FALSE` when type is `"boolean"`.
 #' @param domain Optional domain/category for the column (character).
@@ -44,7 +45,8 @@ int_process_column <- function(data = metadata,
                                type = "character", 
                                factor_levels = NULL, 
                                factor_order = NULL, 
-                               replace_na = NULL, 
+                               replace_na = NULL,
+                               na_level = NULL,
                                rename_factors = NULL, 
                                boolean_map = NULL, 
                                domain = NULL, 
@@ -63,6 +65,16 @@ int_process_column <- function(data = metadata,
   if (!is.null(new_name)) {
     names(data)[names(data) == column] <- new_name
     column <- new_name
+  }
+  
+  #replace specific values with NA before type conversion
+  if (!is.null(replace_na)) {
+    data[[column]] <- ifelse(as.character(data[[column]]) %in% replace_na, NA, as.character(data[[column]]))
+  }
+  
+  #replace NA values with a specific level before type conversion
+  if (!is.null(na_level)) {
+    data[[column]] <- ifelse(is.na(data[[column]]), na_level, as.character(data[[column]]))
   }
   
   #set the type of the column
@@ -123,11 +135,6 @@ int_process_column <- function(data = metadata,
     }
   }
   
-  #replace specific strings with NA for character columns
-  if (!is.null(replace_na) && is.character(data[[column]])) {
-    data[[column]][data[[column]] %in% replace_na] <- NA
-  }
-  
   #print a table of the column's values to the console
   if (print_table) {
     cat("\nTable of", column, ":\n")
@@ -142,6 +149,7 @@ int_process_column <- function(data = metadata,
     factor_levels = factor_levels,
     factor_order = factor_order,
     replace_na = replace_na,
+    na_level = na_level,
     rename_factors = rename_factors,
     boolean_map = boolean_map,
     domain = domain

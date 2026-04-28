@@ -12,6 +12,7 @@ int_process_column(
   factor_levels = NULL,
   factor_order = NULL,
   replace_na = NULL,
+  na_level = NULL,
   rename_factors = NULL,
   boolean_map = NULL,
   domain = NULL,
@@ -34,6 +35,8 @@ int_process_column(
 \item{factor_order}{Optional vector specifying the order of factor levels (character).}
 
 \item{replace_na}{Optional vector of values to replace with \code{NA} (character).}
+
+\item{na_level}{Optional string to replace \code{NA} values with before type conversion (character).}
 
 \item{rename_factors}{Optional named vector for renaming factor levels (named character).}
 
